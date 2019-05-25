@@ -5,3 +5,4 @@ module.exports = app => {
 
     return { save }
 }
+// psql -h localhost -U postgres
