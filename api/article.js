@@ -76,8 +76,8 @@ module.exports = app => {
     const getByCategory = async (req, res) => {
         const categoryId = req.params.id
         const page = req.query.page || 1
-        const categories = app.db
-                .raw(queries.catagoryWithChildren, categoryId)
+        const categories = await app.db
+                .raw(queries.categoryWithChildren, categoryId)
         const ids = categories.rows.map(c => c.id)
 
 
@@ -85,9 +85,13 @@ module.exports = app => {
             .select('a.id', 'a.name', 'a.description', 'a.imageUrl', { author: 'u.name' })
             .limit(limit)
             .offset((page * limit) - limit)
-            .whereRaw('?? = ??', ['u.id', 'a.userId'])
+            .whereRaw('?? = ??', ['u.id', 'a.userId '])
+            .whereIn('categoryId', ids)
+            .orderBy('a.id', 'desc')
+            .then(articles => res.json(articles))
+            .catch(err => res.status(500).send(err))
 
     }
 
-    return { save, remove, get, getById }
+    return { save, remove, get, getById, getByCategory }
 }
