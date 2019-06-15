@@ -100,7 +100,7 @@ module.exports = app => {
     const toTree = (categories, tree) => {
         
         if (!tree) {
-            tree = categories.filter(c => !c.parent)
+            tree = categories.filter(c => !c.parentId)
         }
 
         tree = tree.map(parentNode => {
